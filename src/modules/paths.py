@@ -17,7 +17,7 @@ else:
 # USER DATA
 # ----------------------------
 
-USER_DATA_DIR = Path.home() / "Desktop" / "重要文件" / "找工作" / "JobButlerStorage"
+USER_DATA_DIR = Path.home() / "Desktop" / "Wichtige" / "JobHunting" / "JobButlerStorage"
 
 GENERATED_DIR = USER_DATA_DIR / "generated"
 TEMP_DIR = USER_DATA_DIR / "temp"

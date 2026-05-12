@@ -122,7 +122,7 @@ def generate_application(
     compile_latex("CV-ENDE-AllInkl.tex", work_cv)
 
     # Create output folder
-    company_folder = GENERATED_DIR / company.replace(" ", "_")
+    company_folder = GENERATED_DIR / f"{company}_{position}"
     company_folder.mkdir(parents=True, exist_ok=True)
 
     shutil.copy(
@@ -193,3 +193,11 @@ def generate_application(
     # ------------------------------------------------
 
     doc.build(elements)
+
+    # Update database
+    add_application(
+        company,
+        position,
+        language,
+        with_photo
+    )
