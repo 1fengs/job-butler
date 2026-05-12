@@ -2,6 +2,14 @@ from pathlib import Path
 import shutil
 import subprocess
 import os
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer
+)
+
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.pagesizes import A4
 
 from modules.latex_utils import (
     replace_newcommand,
@@ -127,34 +135,61 @@ def generate_application(
         company_folder / f"CV_{language}.pdf"
     )
 
-    job_description_path = os.path.join(
-        company_folder,
-        "job_description.txt"
+    pdf_path = company_folder / "Application_Notes.pdf"
+
+    doc = SimpleDocTemplate(
+        str(pdf_path),
+        pagesize=A4
     )
 
-    with open(job_description_path, "w", encoding="utf-8") as f:
+    styles = getSampleStyleSheet()
 
-        f.write("JOB DESCRIPTION\n")
-        f.write("=" * 60)
-        f.write("\n\n")
+    elements = []
 
-        f.write(job_description)
+    # ------------------------------------------------
+    # JOB DESCRIPTION TITLE
+    # ------------------------------------------------
 
-        f.write("\n\n")
-        f.write("=" * 60)
-        f.write("\n")
-        f.write("MISCELLANEOUS NOTES\n")
-        f.write("=" * 60)
-        f.write("\n\n")
-
-        for note in misc_notes:
-            if note:
-                f.write(f"- {note}\n")
-
-    # Update database
-    add_application(
-        company,
-        position,
-        language,
-        with_photo
+    elements.append(
+        Paragraph("<b>Job Description</b>", styles["Heading1"])
     )
+
+    elements.append(Spacer(1, 12))
+
+    elements.append(
+        Paragraph(
+            job_description.replace("\n", "<br/>"),
+            styles["BodyText"]
+        )
+    )
+
+    elements.append(Spacer(1, 24))
+
+    # ------------------------------------------------
+    # NOTES TITLE
+    # ------------------------------------------------
+
+    elements.append(
+        Paragraph("<b>Miscellaneous Notes</b>", styles["Heading1"])
+    )
+
+    elements.append(Spacer(1, 12))
+
+    for note in misc_notes:
+
+        if note.strip():
+
+            elements.append(
+                Paragraph(
+                    f"• {note}",
+                    styles["BodyText"]
+                )
+            )
+
+            elements.append(Spacer(1, 8))
+
+    # ------------------------------------------------
+    # BUILD PDF
+    # ------------------------------------------------
+
+    doc.build(elements)
