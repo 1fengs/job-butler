@@ -13,12 +13,12 @@ from modules.latex_utils import (
 from modules.application_db import add_application
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-
-CV_TEMPLATE = BASE_DIR / "templates" / "cv"
-COVER_TEMPLATE = BASE_DIR / "templates" / "coverletter"
-TEMP_DIR = BASE_DIR / "temp"
-OUTPUT_DIR = BASE_DIR / "generated"
+from modules.paths import (
+    CV_TEMPLATE,
+    COVER_TEMPLATE,
+    TEMP_DIR,
+    GENERATED_DIR
+)
 
 
 
@@ -114,7 +114,7 @@ def generate_application(
     compile_latex("CV-ENDE-AllInkl.tex", work_cv)
 
     # Create output folder
-    company_folder = OUTPUT_DIR / company.replace(" ", "_")
+    company_folder = GENERATED_DIR / company.replace(" ", "_")
     company_folder.mkdir(parents=True, exist_ok=True)
 
     shutil.copy(

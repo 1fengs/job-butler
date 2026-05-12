@@ -2,8 +2,7 @@ from pathlib import Path
 import csv
 from datetime import datetime
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-DB_FILE = BASE_DIR / "applications.csv"
+from modules.paths import DB_FILE
 
 
 def add_application(company, position, language, photo):

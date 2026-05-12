@@ -11,7 +11,7 @@ from reportlab.platypus import (
     Spacer
 )
 
-CSV_FILE = "../applications.csv"
+CSV_FILE = "applications.csv"
 PDF_FILE = "applications_tracker.pdf"
 
 styles = getSampleStyleSheet()
