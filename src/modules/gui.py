@@ -3,15 +3,31 @@ from tkinter import messagebox
 import threading
 
 from modules.generator import generate_application
-
+from modules.company_summary import generate_company_summary
 
 # ---------------------------------------------------
 # APP CONFIG
 # ---------------------------------------------------
 
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("blue")
+ctk.set_default_color_theme("dark-blue")
 
+# ---------------------------------------------------
+# COLORS — BLACK / WHITE DARK MODE
+# ---------------------------------------------------
+
+BG_COLOR = "#000000"
+CARD_COLOR = "#0a0a0a"
+INPUT_COLOR = "#111111"
+
+TEXT_PRIMARY = "#ffffff"
+TEXT_MUTED = "#a1a1aa"
+
+ACCENT = "#ffffff"
+ACCENT_HOVER = "#d4d4d8"
+
+BORDER = "#262626"
+SECTION = "#171717"
 
 # ---------------------------------------------------
 # MAIN GUI
@@ -25,13 +41,6 @@ def launch_gui():
     app.geometry("1920x1080")
     app.minsize(900, 620)
 
-    # Colors
-    BG_COLOR = "#0f172a"
-    CARD_COLOR = "#111827"
-    INPUT_COLOR = "#1f2937"
-    TEXT_MUTED = "#94a3b8"
-    ACCENT = "#3b82f6"
-
     app.configure(fg_color=BG_COLOR)
 
     # ---------------------------------------------------
@@ -40,7 +49,6 @@ def launch_gui():
 
     app.grid_columnconfigure(0, weight=1)
     app.grid_columnconfigure(1, weight=1)
-
     app.grid_rowconfigure(0, weight=1)
 
     # ---------------------------------------------------
@@ -61,7 +69,9 @@ def launch_gui():
         pady=40
     )
 
-    # Logo / Header
+    # ---------------------------------------------------
+    # HEADER
+    # ---------------------------------------------------
 
     logo_label = ctk.CTkLabel(
         left_frame,
@@ -76,6 +86,7 @@ def launch_gui():
         left_frame,
         text="Application\nPackage Generator",
         justify="left",
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=42, weight="bold")
     )
 
@@ -100,8 +111,10 @@ def launch_gui():
 
     job_box = ctk.CTkFrame(
         left_frame,
-        fg_color="#172033",
-        corner_radius=20
+        fg_color=SECTION,
+        corner_radius=20,
+        border_width=1,
+        border_color=BORDER
     )
 
     job_box.pack(
@@ -110,11 +123,10 @@ def launch_gui():
         pady=(40, 0)
     )
 
-    # Title
-
     job_title = ctk.CTkLabel(
         job_box,
         text="Job Description",
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=20, weight="bold")
     )
 
@@ -138,8 +150,9 @@ def launch_gui():
         height=260,
         corner_radius=14,
         border_width=1,
-        border_color="#334155",
-        fg_color="#0f172a",
+        border_color=BORDER,
+        fg_color=INPUT_COLOR,
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=14),
         wrap="word"
     )
@@ -158,12 +171,15 @@ def launch_gui():
     notes_label = ctk.CTkLabel(
         job_box,
         text="Miscellaneous Notes",
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=16, weight="bold")
     )
 
     notes_label.pack(anchor="w", padx=25, pady=(0, 12))
 
-    # Note 1
+    # ---------------------------------------------------
+    # NOTE 1
+    # ---------------------------------------------------
 
     note1_entry = ctk.CTkEntry(
         job_box,
@@ -171,14 +187,17 @@ def launch_gui():
         corner_radius=12,
         border_width=1,
         fg_color=INPUT_COLOR,
-        border_color="#334155",
+        border_color=BORDER,
+        text_color=TEXT_PRIMARY,
         placeholder_text="Additional note...",
         font=ctk.CTkFont(size=14)
     )
 
     note1_entry.pack(fill="x", padx=25, pady=(0, 12))
 
-    # Note 2
+    # ---------------------------------------------------
+    # NOTE 2
+    # ---------------------------------------------------
 
     note2_entry = ctk.CTkEntry(
         job_box,
@@ -186,7 +205,8 @@ def launch_gui():
         corner_radius=12,
         border_width=1,
         fg_color=INPUT_COLOR,
-        border_color="#334155",
+        border_color=BORDER,
+        text_color=TEXT_PRIMARY,
         placeholder_text="Additional note...",
         font=ctk.CTkFont(size=14)
     )
@@ -202,7 +222,7 @@ def launch_gui():
         fg_color=CARD_COLOR,
         corner_radius=28,
         border_width=1,
-        border_color="#1e293b"
+        border_color=BORDER
     )
 
     right_frame.grid(
@@ -215,11 +235,14 @@ def launch_gui():
 
     right_frame.grid_columnconfigure(0, weight=1)
 
-    # Form title
+    # ---------------------------------------------------
+    # FORM HEADER
+    # ---------------------------------------------------
 
     form_title = ctk.CTkLabel(
         right_frame,
         text="Create New Application",
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=28, weight="bold")
     )
 
@@ -241,6 +264,7 @@ def launch_gui():
     company_label = ctk.CTkLabel(
         right_frame,
         text="Company Name",
+        text_color=TEXT_PRIMARY,
         anchor="w",
         font=ctk.CTkFont(size=14, weight="bold")
     )
@@ -253,7 +277,8 @@ def launch_gui():
         corner_radius=14,
         border_width=1,
         fg_color=INPUT_COLOR,
-        border_color="#334155",
+        border_color=BORDER,
+        text_color=TEXT_PRIMARY,
         placeholder_text="Enter company name",
         font=ctk.CTkFont(size=15)
     )
@@ -267,6 +292,7 @@ def launch_gui():
     position_label = ctk.CTkLabel(
         right_frame,
         text="Position",
+        text_color=TEXT_PRIMARY,
         anchor="w",
         font=ctk.CTkFont(size=14, weight="bold")
     )
@@ -279,12 +305,92 @@ def launch_gui():
         corner_radius=14,
         border_width=1,
         fg_color=INPUT_COLOR,
-        border_color="#334155",
+        border_color=BORDER,
+        text_color=TEXT_PRIMARY,
         placeholder_text="Enter position title",
         font=ctk.CTkFont(size=15)
     )
 
     position_entry.pack(fill="x", padx=40, pady=(8, 24))
+
+    # ---------------------------------------------------
+    # AI COMPANY SUMMARY
+    # ---------------------------------------------------
+
+    def run_company_summary_generation():
+
+        company = company_entry.get().strip()
+
+        if not company:
+            messagebox.showerror(
+                "Missing Company",
+                "Please enter a company name first."
+            )
+            return
+
+        summary_button.configure(
+            state="disabled",
+            text="Generating..."
+        )
+
+        status_label.configure(
+            text="Generating AI company summary..."
+        )
+
+        def worker():
+
+            try:
+
+                summary = generate_company_summary(company)
+
+                app.after(
+                    0,
+                    lambda: company_value_entry.delete(0, "end")
+                )
+
+                app.after(
+                    0,
+                    lambda: company_value_entry.insert(0, summary)
+                )
+
+                app.after(
+                    0,
+                    lambda: status_label.configure(
+                        text="Company summary generated"
+                    )
+                )
+
+            except Exception as e:
+
+                app.after(
+                    0,
+                    lambda: messagebox.showerror(
+                        "OpenAI Error",
+                        str(e)
+                    )
+                )
+
+                app.after(
+                    0,
+                    lambda: status_label.configure(
+                        text="Summary generation failed"
+                    )
+                )
+
+            finally:
+
+                app.after(
+                    0,
+                    lambda: summary_button.configure(
+                        state="normal",
+                        text="✨ Generate"
+                    )
+                )
+
+        threading.Thread(
+            target=worker,
+            daemon=True
+        ).start()
 
     # ---------------------------------------------------
     # COMPANY VALUE
@@ -293,25 +399,62 @@ def launch_gui():
     company_value_label = ctk.CTkLabel(
         right_frame,
         text="Company Value",
+        text_color=TEXT_PRIMARY,
         anchor="w",
         font=ctk.CTkFont(size=14, weight="bold")
     )
 
     company_value_label.pack(anchor="w", padx=40)
 
-    company_value_entry = ctk.CTkEntry(
+    company_value_frame = ctk.CTkFrame(
         right_frame,
+        fg_color="transparent"
+    )
+
+    company_value_frame.pack(
+        fill="x",
+        padx=40,
+        pady=(8, 24)
+    )
+
+    company_value_frame.grid_columnconfigure(0, weight=1)
+
+    company_value_entry = ctk.CTkEntry(
+        company_value_frame,
         height=52,
         corner_radius=14,
         border_width=1,
         fg_color=INPUT_COLOR,
-        border_color="#334155",
+        border_color=BORDER,
+        text_color=TEXT_PRIMARY,
         placeholder_text="Innovation, Sustainability, AI, etc.",
         font=ctk.CTkFont(size=15)
     )
 
-    company_value_entry.pack(fill="x", padx=40, pady=(8, 24))
+    company_value_entry.grid(
+        row=0,
+        column=0,
+        sticky="ew",
+        padx=(0, 10)
+    )
 
+    summary_button = ctk.CTkButton(
+        company_value_frame,
+        text="✨ Generate",
+        width=140,
+        height=52,
+        corner_radius=14,
+        fg_color=ACCENT,
+        hover_color=ACCENT_HOVER,
+        text_color="#000000",
+        font=ctk.CTkFont(size=14, weight="bold"),
+        command=run_company_summary_generation
+    )
+
+    summary_button.grid(
+        row=0,
+        column=1
+    )
 
     # ---------------------------------------------------
     # JOB PLATFORM
@@ -320,6 +463,7 @@ def launch_gui():
     platform_label = ctk.CTkLabel(
         right_frame,
         text="Job Platform",
+        text_color=TEXT_PRIMARY,
         anchor="w",
         font=ctk.CTkFont(size=14, weight="bold")
     )
@@ -332,14 +476,14 @@ def launch_gui():
         corner_radius=14,
         border_width=1,
         fg_color=INPUT_COLOR,
-        border_color="#334155",
+        border_color=BORDER,
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=15)
     )
 
     platform_entry.insert(0, "LinkedIn")
 
     platform_entry.pack(fill="x", padx=40, pady=(8, 24))
-
 
     # ---------------------------------------------------
     # RECIPIENT NAME
@@ -348,6 +492,7 @@ def launch_gui():
     recipient_label = ctk.CTkLabel(
         right_frame,
         text="Recipient Name",
+        text_color=TEXT_PRIMARY,
         anchor="w",
         font=ctk.CTkFont(size=14, weight="bold")
     )
@@ -360,7 +505,8 @@ def launch_gui():
         corner_radius=14,
         border_width=1,
         fg_color=INPUT_COLOR,
-        border_color="#334155",
+        border_color=BORDER,
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=15)
     )
 
@@ -375,6 +521,7 @@ def launch_gui():
     language_label = ctk.CTkLabel(
         right_frame,
         text="Language",
+        text_color=TEXT_PRIMARY,
         anchor="w",
         font=ctk.CTkFont(size=14, weight="bold")
     )
@@ -390,9 +537,10 @@ def launch_gui():
         height=42,
         corner_radius=12,
         selected_color=ACCENT,
-        selected_hover_color="#2563eb",
-        unselected_color="#1e293b",
-        unselected_hover_color="#334155",
+        selected_hover_color=ACCENT_HOVER,
+        unselected_color="#111111",
+        unselected_hover_color="#1f1f1f",
+        text_color="#000000",
         font=ctk.CTkFont(size=14, weight="bold")
     )
 
@@ -412,6 +560,7 @@ def launch_gui():
         checkbox_height=22,
         corner_radius=6,
         border_width=2,
+        text_color=TEXT_PRIMARY,
         font=ctk.CTkFont(size=14)
     )
 
@@ -458,7 +607,7 @@ def launch_gui():
         def worker():
 
             try:
-                
+
                 job_description = job_description_text.get("1.0", "end").strip()
 
                 misc_notes = [
@@ -536,7 +685,8 @@ def launch_gui():
         height=56,
         corner_radius=16,
         fg_color=ACCENT,
-        hover_color="#2563eb",
+        hover_color=ACCENT_HOVER,
+        text_color="#000000",
         font=ctk.CTkFont(size=16, weight="bold")
     )
 
