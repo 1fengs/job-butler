@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import subprocess
+import os
 
 from modules.latex_utils import (
     replace_newcommand,
@@ -47,7 +48,12 @@ def generate_application(
     company,
     position,
     language,
-    with_photo
+    with_photo,
+    company_value,
+    platform,
+    recipient_name,
+    job_description,
+    misc_notes
 ):
 
     work_cv = TEMP_DIR / "cv"
@@ -77,6 +83,24 @@ def generate_application(
         position
     )
 
+    replace_newcommand(
+        cover_file,
+        "CompanyValue",
+        company_value
+    )
+
+    replace_newcommand(
+        cover_file,
+        "Platform",
+        platform
+    )
+
+    replace_newcommand(
+        cover_file,
+        "RecipientName",
+        recipient_name
+    )
+
     # Modify CV
     cv_file = work_cv / "CV-ENDE-AllInkl.tex"
     cv_main_file = work_cv / f"{language}.tex"
@@ -102,6 +126,30 @@ def generate_application(
         work_cv / "CV-ENDE-AllInkl.pdf",
         company_folder / f"CV_{language}.pdf"
     )
+
+    job_description_path = os.path.join(
+        company_folder,
+        "job_description.txt"
+    )
+
+    with open(job_description_path, "w", encoding="utf-8") as f:
+
+        f.write("JOB DESCRIPTION\n")
+        f.write("=" * 60)
+        f.write("\n\n")
+
+        f.write(job_description)
+
+        f.write("\n\n")
+        f.write("=" * 60)
+        f.write("\n")
+        f.write("MISCELLANEOUS NOTES\n")
+        f.write("=" * 60)
+        f.write("\n\n")
+
+        for note in misc_notes:
+            if note:
+                f.write(f"- {note}\n")
 
     # Update database
     add_application(
