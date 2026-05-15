@@ -7,13 +7,26 @@ from modules.paths import DB_FILE
 
 def add_application(company, position, language, photo):
 
-    print(f"Adding application: {company} - {position} - {language} - {'Photo' if photo else 'No Photo'}")
-    file_exists = DB_FILE.exists()
+    existing_rows = []
+
+    if DB_FILE.exists():
+        with open(DB_FILE, "r", newline="") as csvfile:
+            reader = csv.reader(csvfile)
+            existing_rows = list(reader)
+
+            for row in existing_rows[1:]:
+                if (
+                    row[0] == company and
+                    row[1] == position and
+                    row[3] == language
+                ):
+                    print("Application already exists.")
+                    return
 
     with open(DB_FILE, "a", newline="") as csvfile:
         writer = csv.writer(csvfile)
 
-        if not file_exists:
+        if not existing_rows:
             writer.writerow([
                 "company",
                 "position",

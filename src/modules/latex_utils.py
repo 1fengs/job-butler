@@ -1,6 +1,31 @@
 from pathlib import Path
 import re
 
+def sanitize_text(text: str) -> str:
+    if not text:
+        return ""
+
+    # Remove emojis / unsupported unicode
+    text = text.encode("ascii", "ignore").decode()
+
+    # Escape LaTeX special characters
+    replacements = {
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+    }
+
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+
+    return text.strip()
+
 def replace_fontawesome(tex_file):
     path = Path(tex_file)
     content = path.read_text()

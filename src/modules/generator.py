@@ -2,6 +2,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import os
+import unicodedata
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -15,7 +16,8 @@ from modules.latex_utils import (
     replace_newcommand,
     switch_language,
     toggle_photo,
-    replace_fontawesome
+    replace_fontawesome,
+    sanitize_text
 )
 
 from modules.application_db import add_application
@@ -28,6 +30,8 @@ from modules.paths import (
     GENERATED_DIR
 )
 
+def normalize_unicode(text):
+    return unicodedata.normalize("NFKD", text)
 
 
 def compile_latex(tex_file, cwd):
@@ -63,6 +67,14 @@ def generate_application(
     job_description,
     misc_notes
 ):
+    company = sanitize_text(company)
+    position = sanitize_text(position)
+    company_value = sanitize_text(company_value)
+    platform = sanitize_text(platform)
+    recipient_name = sanitize_text(recipient_name)
+    # job_description = sanitize_text(job_description)
+    # misc_notes = [sanitize_text(note) for note in misc_notes]
+    job_description = normalize_unicode(job_description)
 
     work_cv = TEMP_DIR / "cv"
     work_cl = TEMP_DIR / "coverletter"

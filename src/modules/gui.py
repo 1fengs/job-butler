@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import threading
+import re
 
 from modules.generator import generate_application
 from modules.company_summary import generate_company_summary
@@ -153,7 +154,7 @@ def launch_gui():
         border_color=BORDER,
         fg_color=INPUT_COLOR,
         text_color=TEXT_PRIMARY,
-        font=ctk.CTkFont(size=14),
+        font=("SF Pro Text", 14),
         wrap="word"
     )
 
@@ -163,6 +164,30 @@ def launch_gui():
         padx=25,
         pady=(20, 20)
     )
+
+    def remove_emojis(text):
+        return re.sub(
+            r'[\U00010000-\U0010ffff]',
+            '',
+            text
+        )
+
+    def handle_paste(event=None):
+
+        try:
+            clipboard = app.clipboard_get()
+
+            cleaned = remove_emojis(clipboard)
+
+            job_description_text.insert("insert", cleaned)
+
+        except Exception as e:
+            print(e)
+
+        return "break"
+    
+    job_description_text.bind("<Command-v>", handle_paste)
+    job_description_text.bind("<Control-v>", handle_paste)
 
     # ---------------------------------------------------
     # NOTES SECTION
